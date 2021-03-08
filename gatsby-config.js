@@ -3,13 +3,6 @@ module.exports = {
     title: "minvitaminnu",
   },
   plugins: [
-    {
-      resolve: "gatsby-source-sanity",
-      options: {
-        projectId: "c882x319",
-        dataset: "production",
-      },
-    },
     "gatsby-plugin-postcss",
     "gatsby-plugin-gatsby-cloud",
     "gatsby-plugin-image",
@@ -45,6 +38,14 @@ module.exports = {
         path: "./src/pages/",
       },
       __key: "pages",
+    },
+    {
+      resolve: "gatsby-source-sanity",
+      options: {
+        projectId: "c882x319",
+        dataset: "production",
+        graphqlTag: "default",
+      },
     },
   ],
 };
