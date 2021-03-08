@@ -1,6 +1,8 @@
 module.exports = {
   siteMetadata: {
     title: "minvitaminnu",
+    description: "Min Vitamin",
+    siteUrl: "https://minvitaminnu.gatsbyjs.io"
   },
   plugins: [
     "gatsby-plugin-postcss",
@@ -20,6 +22,7 @@ module.exports = {
         icon: "src/images/icon.png",
       },
     },
+
     "gatsby-transformer-remark",
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
