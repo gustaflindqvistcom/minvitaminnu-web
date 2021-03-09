@@ -48,6 +48,7 @@ module.exports = {
         projectId: "c882x319",
         dataset: "production",
         graphqlTag: "default",
+        watchMode: true,
       },
     },
   ],

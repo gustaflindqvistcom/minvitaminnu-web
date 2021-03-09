@@ -1,13 +1,13 @@
 const path = require(`path`)
 // Log out information after a build is done
 exports.onPostBuild = ({ reporter }) => {
-    reporter.info(`Your Gatsby site has been built!`)
+  reporter.info(`Your Gatsby site has been built!`)
 }
 
-exports.createPages = async ({ graphql, actions }) => {
-    const { createPage } = actions
-    const pageTemplate = path.resolve(`src/pages/page.js`)
-    const result = await graphql(`
+async function createPages(pathPrefix = "/", graphql, actions, reporter) {
+  const { createPage } = actions
+  const pageTemplate = path.resolve(`src/pages/page.js`)
+  const result = await graphql(`
       query {
         allSanityPage {
           edges {
@@ -20,25 +20,30 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `);
 
-    if (result.errors) {
-        throw result.errors;
-    }
+  if (result.errors) {
+    throw result.errors;
+  }
 
-    result.data.allSanityPage.edges.forEach(edge => {
-        createPage({
-            path: `${edge.node.slug.current}`,
-            component: pageTemplate,
-            context: {
-                title: edge.node.title,
-            },
-        })
-    })
+  const pageEdges = (result.data.allSanityPage || {}).edges || [];
+  pageEdges
+    // .filter((edge) => !isFuture(edge.node.publishedAt))
+    .forEach((edge) => {
+      const { id, slug = {} } = edge.node;
+      const path = `${pathPrefix}/${slug.current}/`;
+      reporter.info(`Creating pages: ${path}`);
+      createPage({
+        path,
+        component: pageTemplate,
+        context: { id },
+      });
+    });
+
 }
 
-exports.createPages = async ({ graphql, actions }) => {
-    const { createPage } = actions
-    const pageTemplate = path.resolve(`src/pages/vitamin.js`)
-    const result = await graphql(`
+async function createVitamins(pathPrefix = "/vitaminer", graphql, actions, reporter) {
+  const { createPage } = actions
+  const pageTemplate = path.resolve(`src/pages/vitamin.js`)
+  const result = await graphql(`
       query {
         allSanityVitamin {
           edges {
@@ -51,24 +56,28 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `);
 
-    if (result.errors) {
-        throw result.errors;
-    }
-
-    result.data.allSanityVitamin.edges.forEach(edge => {
-        createPage({
-            path: `${edge.node.slug.current}`,
-            component: pageTemplate,
-            context: {
-                title: edge.node.title,
-            },
-        })
-    })
+  if (result.errors) {
+    throw result.errors;
+  }
+  const vitaminEdges = (result.data.allSanityVitamin || {}).edges || [];
+  vitaminEdges
+    // .filter((edge) => !isFuture(edge.node.publishedAt))
+    .forEach((edge) => {
+      const { id, slug = {} } = edge.node;
+      const path = `${pathPrefix}/${slug.current}/`;
+      reporter.info(`Creating vitaminer: ${path}`);
+      createPage({
+        path,
+        component: pageTemplate,
+        context: { id },
+      });
+    });
 }
-exports.createPages = async ({ graphql, actions }) => {
-    const { createPage } = actions
-    const pageTemplate = path.resolve(`src/pages/symptom.js`)
-    const result = await graphql(`
+
+async function createSymptoms(pathPrefix = "/symptom", graphql, actions, reporter) {
+  const { createPage } = actions
+  const pageTemplate = path.resolve(`src/pages/symptom.js`)
+  const result = await graphql(`
       query {
         allSanitySymptom {
           edges {
@@ -81,22 +90,27 @@ exports.createPages = async ({ graphql, actions }) => {
       }
     `);
 
-    if (result.errors) {
-        throw result.errors;
-    }
+  if (result.errors) {
+    throw result.errors;
+  }
 
-    result.data.allSanitySymptom.edges.forEach(edge => {
-        createPage({
-            path: `${edge.node.slug.current}`,
-            component: pageTemplate,
-            context: {
-                title: edge.node.title,
-            },
-        })
-    })
+  const symptomEdges = (result.data.allSanitySymptom || {}).edges || [];
+  symptomEdges
+    // .filter((edge) => !isFuture(edge.node.publishedAt))
+    .forEach((edge) => {
+      const { id, slug = {} } = edge.node;
+      const path = `${pathPrefix}/${slug.current}/`;
+      reporter.info(`Creating symptom: ${path}`);
+      createPage({
+        path,
+        component: pageTemplate,
+        context: { id },
+      });
+    });
 }
 
-exports.createPages = async ({ graphql, actions }) => {
+async function createBlogPostPages(pathPrefix = "/blogg", graphql, actions, reporter) {
+  exports.createPages = async ({ graphql, actions }) => {
     const { createPage } = actions
     const pageTemplate = path.resolve(`src/pages/post.js`)
     const result = await graphql(`
@@ -113,16 +127,28 @@ exports.createPages = async ({ graphql, actions }) => {
     `);
 
     if (result.errors) {
-        throw result.errors;
+      throw result.errors;
     }
 
-    result.data.allSanityPost.edges.forEach(edge => {
+    const postEdges = (result.data.allSanityPost || {}).edges || [];
+    postEdges
+      // .filter((edge) => !isFuture(edge.node.publishedAt))
+      .forEach((edge) => {
+        const { id, slug = {} } = edge.node;
+        const path = `${pathPrefix}/${slug.current}/`;
+        reporter.info(`Creating bloggposter: ${path}`);
         createPage({
-            path: `${edge.node.slug.current}`,
-            component: pageTemplate,
-            context: {
-                title: edge.node.title,
-            },
-        })
-    })
+          path,
+          component: pageTemplate,
+          context: { id },
+        });
+      });
+  }
 }
+
+exports.createPages = async ({ graphql, actions, reporter }) => {
+  await createPages("/", graphql, actions, reporter);
+  await createVitamins("/vitaminer", graphql, actions, reporter);
+  await createSymptoms("/symptom", graphql, actions, reporter);
+  await createBlogPostPages("/blogg", graphql, actions, reporter);
+};
