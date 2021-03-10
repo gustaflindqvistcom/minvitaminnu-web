@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: "minvitaminnu",
+    title: "Min Vitamin",
     description: "Min Vitamin",
     siteUrl: "https://minvitaminnu.gatsbyjs.io"
   },
