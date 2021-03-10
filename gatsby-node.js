@@ -1,12 +1,13 @@
 const path = require(`path`)
+// const { createPostPages } = require("./src/build/createPostPages")
 // Log out information after a build is done
 exports.onPostBuild = ({ reporter }) => {
   reporter.info(`Your Gatsby site has been built!`)
 }
 
-async function createPages(pathPrefix = "/", graphql, actions, reporter) {
+async function createPages(pathPrefix = "", graphql, actions, reporter) {
   const { createPage } = actions
-  const pageTemplate = path.resolve(`src/pages/page.js`)
+  const pageTemplate = path.resolve(`./src/templates/page.tsx`)
   const result = await graphql(`
       query {
         allSanityPage {
@@ -29,7 +30,7 @@ async function createPages(pathPrefix = "/", graphql, actions, reporter) {
     // .filter((edge) => !isFuture(edge.node.publishedAt))
     .forEach((edge) => {
       const { id, slug = {} } = edge.node;
-      const path = `${pathPrefix}/${slug.current}/`;
+      const path = `${pathPrefix}${slug.current}/`;
       reporter.info(`Creating pages: ${path}`);
       createPage({
         path,
@@ -42,7 +43,7 @@ async function createPages(pathPrefix = "/", graphql, actions, reporter) {
 
 async function createVitamins(pathPrefix = "/vitaminer", graphql, actions, reporter) {
   const { createPage } = actions
-  const pageTemplate = path.resolve(`src/pages/vitamin.js`)
+  const pageTemplate = path.resolve(`./src/templates/vitamin.tsx`)
   const result = await graphql(`
       query {
         allSanityVitamin {
@@ -76,7 +77,7 @@ async function createVitamins(pathPrefix = "/vitaminer", graphql, actions, repor
 
 async function createSymptoms(pathPrefix = "/symptom", graphql, actions, reporter) {
   const { createPage } = actions
-  const pageTemplate = path.resolve(`src/pages/symptom.js`)
+  const pageTemplate = path.resolve(`./src/templates/symptom.tsx`)
   const result = await graphql(`
       query {
         allSanitySymptom {
@@ -96,7 +97,6 @@ async function createSymptoms(pathPrefix = "/symptom", graphql, actions, reporte
 
   const symptomEdges = (result.data.allSanitySymptom || {}).edges || [];
   symptomEdges
-    // .filter((edge) => !isFuture(edge.node.publishedAt))
     .forEach((edge) => {
       const { id, slug = {} } = edge.node;
       const path = `${pathPrefix}/${slug.current}/`;
@@ -109,11 +109,10 @@ async function createSymptoms(pathPrefix = "/symptom", graphql, actions, reporte
     });
 }
 
-async function createBlogPostPages(pathPrefix = "/blogg", graphql, actions, reporter) {
-  exports.createPages = async ({ graphql, actions }) => {
-    const { createPage } = actions
-    const pageTemplate = path.resolve(`src/pages/post.js`)
-    const result = await graphql(`
+async function createBlogPostPages(pathPrefix = "", graphql, actions, reporter) {
+  const { createPage } = actions
+  const pageTemplate = path.resolve(`./src/templates/post.tsx`)
+  const result = await graphql(`
       query {
         allSanityPost{
           edges {
@@ -126,24 +125,23 @@ async function createBlogPostPages(pathPrefix = "/blogg", graphql, actions, repo
       }
     `);
 
-    if (result.errors) {
-      throw result.errors;
-    }
-
-    const postEdges = (result.data.allSanityPost || {}).edges || [];
-    postEdges
-      // .filter((edge) => !isFuture(edge.node.publishedAt))
-      .forEach((edge) => {
-        const { id, slug = {} } = edge.node;
-        const path = `${pathPrefix}/${slug.current}/`;
-        reporter.info(`Creating bloggposter: ${path}`);
-        createPage({
-          path,
-          component: pageTemplate,
-          context: { id },
-        });
-      });
+  if (result.errors) {
+    throw result.errors;
   }
+
+  const postEdges = (result.data.allSanityPost || {}).edges || [];
+  postEdges
+    // .filter((edge) => !isFuture(edge.node.publishedAt))
+    .forEach((edge) => {
+      const { id, slug = {} } = edge.node;
+      const path = `${pathPrefix}/${slug.current}/`;
+      reporter.info(`Creating bloggposter: ${path}`);
+      createPage({
+        path,
+        component: pageTemplate,
+        context: { id },
+      });
+    });
 }
 
 exports.createPages = async ({ graphql, actions, reporter }) => {
