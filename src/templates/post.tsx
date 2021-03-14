@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { graphql } from 'gatsby'
 
+import Layout from '../containers/layout'
+
 export const query = graphql`
   # query SiteSettings {
   #   site {
@@ -10,7 +12,7 @@ export const query = graphql`
   #     }
   #   }
   # },
-  query BlogPost($id: String!){
+  query PostQuery($id: String!){
     blogPost: sanityPost(id: {eq: $id}){
       id
       title
@@ -20,7 +22,7 @@ export const query = graphql`
 `
 
 
-const BlogPostTemplateQuery = (props) => {
+const PostTemplate = (props) => {
   const { data, errors } = props;
   const [count, setCount] = React.useState(0);
   const post = data && data.blogPost;
@@ -30,15 +32,16 @@ const BlogPostTemplateQuery = (props) => {
   };
 
   return (
-    <div className="container mx-auto">
-      {/* # <small>{data.site.siteMetadata.title}</small> */}
+    <Layout>
+
       <h1 className="text-7xl">{post.title}</h1>
       <h3>{post.slug.current}</h3>
       {/* <p>{data.site.siteMetadata.description}</p> */}
       <button onClick={increment}>Räkna upp</button>
       <p className="">{count}</p>
-    </div>
+
+    </Layout>
   );
 }
 
-export default BlogPostTemplateQuery;
+export default PostTemplate;

@@ -1,12 +1,12 @@
 import { Link } from "gatsby";
 import React from "react";
 
-const Header = ({ siteTitle, scrolled }) => {
+const Header = ({ siteTitle }) => {
     return (
-        <nav id="header" className={headerClass}>
+        <nav id="header" >
             <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
                 <div className="pl-4 flex items-center">
-                    <Link id="siteTitle" className={titleClass} to="/">
+                    <Link id="siteTitle" to="/">
                         <svg
                             className="h-8 fill-current inline"
                             xmlns="http://www.w3.org/2000/svg"
