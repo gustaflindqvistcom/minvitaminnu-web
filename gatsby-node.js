@@ -118,7 +118,8 @@ async function createBlogPostPages(pathPrefix = "", graphql, actions, reporter) 
           edges {
             node {
               slug { current },
-              title
+              title,
+              id
             }
           }
         }
